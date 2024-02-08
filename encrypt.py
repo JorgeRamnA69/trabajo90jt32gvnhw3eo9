@@ -90,7 +90,7 @@ def decrypt_files():
                 with open(file, "wb") as thefile:
                     thefile.write(contents_decrypted)
 
-                result_label.config(text=f"Congratulations! \n Files decrypted: \n  {files}", fg="green", bg=bg_color)
+                result_label.config(text=f"Congratulations! Got descifred 😘😘", fg="green", bg=bg_color)
               
             except InvalidToken:
                 result_label.config(text=f"No files to decrypt", fg="black")

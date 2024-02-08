@@ -65,6 +65,7 @@ def encrypt_files():
     result_label.config(text=f"Total files encrypted: {total_files_encrypted}", fg="yellow", bg="red")
 
 
+
 #function to decrypt all files in the current directory
 def decrypt_files():
     password = pw_entry.get()
@@ -90,7 +91,7 @@ def decrypt_files():
                 with open(file, "wb") as thefile:
                     thefile.write(contents_decrypted)
 
-                result_label.config(text=f"Congratulations! Got descifred 😘😘", fg="green", bg=bg_color)
+                result_label.config(text=f"Congratulations! Get decrypted bitch 😘", fg="green", bg=bg_color)
               
             except InvalidToken:
                 result_label.config(text=f"No files to decrypt", fg="black")

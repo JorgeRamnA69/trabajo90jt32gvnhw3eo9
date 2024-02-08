@@ -90,6 +90,10 @@ def decrypt_files():
                 if file_extension.lower() in ALLOWED_EXTENSIONS:
                     files.append(file)
 
+        # Mostrar un indicador de procesamiento
+        result_label.config(text="Decrypting files...", fg="blue")
+
+        # Procesar los archivos
         for file in files:
             try:
                 with open(file, "rb") as thefile:
@@ -101,9 +105,10 @@ def decrypt_files():
                 result_label.config(text=f"Congratulations! Get decrypted bitch 😘", fg="green", bg=bg_color)
               
             except InvalidToken:
-                result_label.config(text=f"No files to decrypt", fg="black")
+                result_label.config(text="No files to decrypt", fg="black")
     else:
         result_label.config(text="Incorrect password", fg="red", bg=bg_color)
+
 
 
 def color_change():

@@ -56,9 +56,8 @@ def encrypt_files():
 
                 total_files_encrypted += 1
 
+    # Muestra el número total de archivos cifrados sin listar sus nombres
     result_label.config(text=f"Total files encrypted: {total_files_encrypted}", fg="yellow", bg="red")
-
-
 
 #function to decrypt all files in the current directory
 def decrypt_files():

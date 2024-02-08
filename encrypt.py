@@ -108,7 +108,7 @@ root.title("RANSOMWARE DECRYPTOR")
 root.geometry("1000x700")
 bg_color = root.cget("bg")
 
-message_label = tk.Label(root, text="Unfortunately you've been hit by a ransomware :( This is only a demonstration so you don't have to pay anything to anybody.\n Password is lihapulla", wraplength=450, width=45, font=("Arial", 20))
+message_label = tk.Label(root, text="Unfortunately you've been hit by a ransomware :( 👍", wraplength=450, width=45, font=("Arial", 20))
 message_label.pack(pady=30)
 color_change()
 

